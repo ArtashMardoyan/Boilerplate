@@ -1,0 +1,300 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Equal Ed  API",
+    "description": "Equal Ed  API"
+  },
+  "host": "35.185.88.245:8090",
+  "basePath": "/api/",
+  "tags": [
+    {
+      "name": "Lessons",
+      "description": "API for Lessons"
+    },
+    {
+      "name": "Activities",
+      "description": "API for Activities"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/lessons": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "Get all lessons",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "max items per page",
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "description": "page number",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "Create Lesson",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Lessson properties",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/lessons/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of lesson",
+          "type": "ObjectID"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "Update Lesson",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Lessson properties",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "Delete Lesson",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Get all activities",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "max items per page",
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "description": "page number",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Activity"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Create Activity",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Activity properties",
+            "schema": {
+              "$ref": "#/definitions/Activity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/activities/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of activity",
+          "type": "ObjectID"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Update Activity",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Activity properties",
+            "schema": {
+              "$ref": "#/definitions/Activity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Delete Activity",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Lesson": {
+      "required": [
+        "title",
+        "approach",
+        "overview",
+        "checklist"
+      ],
+      "properties": {
+        "_id": {
+          "type": "ObjectID",
+          "readOnly": true,
+          "uniqueItems": true
+        },
+        "title": {
+          "type": "string"
+        },
+        "overview": {
+          "type": "string"
+        },
+        "approach": {
+          "type": "string"
+        },
+        "checklist": {
+         "type": "object",
+          "properties": {
+            "equipment": {
+              "type": "string"
+            },
+            "printOuts": {
+              "type": "string"
+            },
+            "instructions": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Activity": {
+      "required": [
+        "title",
+        "shortDescription",
+        "objectives",
+        "duration",
+        "competencies",
+        "templateType",
+        "modality"
+      ],
+      "properties": {
+        "_id": {
+          "type": "ObjectID",
+          "readOnly": true,
+          "uniqueItems": true
+        },
+        "title": {
+          "type": "string"
+        },
+        "shortDescription": {
+          "type": "string"
+        },
+        "objectives": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "competencies": {
+          "type": "string"
+        },
+        "templateType": {
+          "type": "string",
+          "enum": ["content", "assessment"]
+        },
+        "modality": {
+          "type": "string",
+          "enum": ["whole_class", "groups", "pairs", "individual"]
+        }
+      }
+    }
+  }
+}
