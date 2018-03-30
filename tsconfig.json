@@ -3,7 +3,8 @@
     "outDir": "./build/",
     "module": "commonjs",
     "target": "es5",
-    "sourceMap": false
+    "sourceMap": false,
+    "allowJs":true
   },
   "include": [
     "./src/**/*"

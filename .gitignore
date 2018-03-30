@@ -51,6 +51,9 @@ coverage
 # nyc test coverage
 .nyc_output
 
+# webstorm project files
+.idea
+
 # Build output
 build
 
