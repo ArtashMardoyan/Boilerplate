@@ -45,7 +45,6 @@ class Server {
             res.header('Access-Control-Allow-Credentials', 'true');
             next();
         });
-
     }
 
     public routes(): void {
