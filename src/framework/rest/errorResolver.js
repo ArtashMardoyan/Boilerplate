@@ -6,7 +6,7 @@ const HttpStatus = require('./../http/enums/HttpStatus');
 const config = require('./../../config');
 
 export default (err, req, res, next) => { // eslint-disable-line
-    console.log(err);
+    // console.log(err);
     let statusCode = err.statusCode || HttpStatus.INTERNAL_SERVER_ERROR.code;
     let statusName = err.statusName || HttpStatus.INTERNAL_SERVER_ERROR.name;
 

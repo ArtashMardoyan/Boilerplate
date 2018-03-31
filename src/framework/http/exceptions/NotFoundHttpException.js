@@ -8,6 +8,6 @@ import HttpStatus from '../enums/HttpStatus';
  */
 export default class NotFoundHttpException extends HttpException {
     constructor(message) {
-        super(HttpStatus.NOT_FOUND, message);
+        super(HttpStatus.NOT_FOUND['code'], message || "Not found.", errors);
     }
 }

@@ -26,18 +26,18 @@ export default class HttpException extends Error {
 
         switch (typeof httpStatus) {
             case 'number':
-                httpStatus = HttpStatus.get(httpStatus);
+                httpStatus = HttpStatus[httpStatus];
                 if (!_.isUndefined(httpStatus)) {
-                    statusCode = httpStatus.valueOf();
+                    statusCode = httpStatus;
                     statusName = _String(httpStatus.key).humanize().value(); // eslint-disable-line
                 }
                 break;
             case 'object':
-                statusCode = httpStatus.valueOf();
+                statusCode = httpStatus;
                 statusName = _String(httpStatus.key).humanize().value(); // eslint-disable-line
                 break;
             default:
-                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.valueOf();
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.code;
                 statusName = _String(HttpStatus.INTERNAL_SERVER_ERROR.key).humanize().value(); // eslint-disable-line
         }
 

@@ -1,6 +1,7 @@
 'use strict';
 
 import * as _ from 'underscore';
+import * as mongoDb from 'mongodb/';
 
 import Response from '../framework/rest/Response';
 import Lessons from '../models/Lessons';
@@ -8,6 +9,7 @@ import Lessons from '../models/Lessons';
 class LessonController {
 
     public actionIndex(req: any, res: any): object {
+
         return Lessons.find({})
             .then((data) => {
                 return Response.ok(res, data, null);
@@ -22,21 +24,25 @@ class LessonController {
 
         return Lessons.create(result)
             .then((data) => {
-                return res.send(data);
+                return Response.created(res, data);
             })
             .catch((err) => {
-                return res.send(err);
+                return Response.unprocessableEntity(res, err);
             });
-
     }
 
     public actionUpdate(req: any, res: any): object {
         const {id} = req.params;
+        // const isValid = mongoDb.ObjectID.isValid;
+        //
+        // if (!isValid(id)) {
+        //     return Response.notFound(res);
+        // }
 
         return Lessons.findById(id)
             .then((lesson) => {
                 if (_.isEmpty(lesson)) {
-                    return res.send({status: 404, message: 'not found'});
+                    return Response.notFound(res);
                 }
 
                 const result = _.pick(req.body,
@@ -44,16 +50,13 @@ class LessonController {
 
                 _.assign(lesson, result);
 
-                lesson.save()
+                return lesson.save()
                     .then((data) => {
-                        return res.send(data);
-                    })
-                    .catch((err) => {
-                        return res.send(err);
+                        return Response.ok(res, data);
                     });
             })
-            .catch((err) => {
-                return res.send(err);
+            .catch(() => {
+                return Response.internalServer(res);
             });
     }
 
@@ -63,19 +66,16 @@ class LessonController {
         return Lessons.findById(id)
             .then((lesson) => {
                 if (_.isEmpty(lesson)) {
-                    return res.send({status: 404, message: 'not found'});
+                    return Response.notFound(res);
                 }
 
-                lesson.remove()
-                    .then((data) => {
-                        return res.send(data);
-                    })
-                    .catch((err) => {
-                        return res.send(err);
+                return lesson.remove()
+                    .then(() => {
+                        return Response.noContent(res);
                     });
             })
             .catch((err) => {
-                return res.send(err);
+                return Response.internalServer(res);
             });
     }
 }

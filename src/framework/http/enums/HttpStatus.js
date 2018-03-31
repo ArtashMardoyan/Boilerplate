@@ -47,6 +47,6 @@ module.exports = {
     },
     INTERNAL_SERVER_ERROR: {
         name: 'Internal server error',
-        coe: 500
+        code: 500
     }
 };

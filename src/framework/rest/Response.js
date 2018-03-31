@@ -51,22 +51,33 @@ export default class Response {
     }
 
     static unprocessableEntity(res, error, message) {
-        if (error.hasOwnProperty('name') && ((error.name === Constants.SEQUELIZE_VALIDATION_ERROR.valueOf()) || (error.name === Constants.SEQUELIZE_UNIQUE_VALIDATION_ERROR.valueOf()))) {
+        if (error instanceof Error && error.hasOwnProperty('name') &&
+            error.name === 'ValidationError') {
             let errors = [];
 
-            error.errors.forEach(function (error) {
-                if (error.type === 'notNull Violation') {
-                    error.message = ValidationMessages.notEmpty;
-                } else if (error.type === 'unique violation') {
-                    error.message = ValidationMessages.exist;
-                }
+            try {
+                if (error.hasOwnProperty('errors')) {
+                    for (let field in error.errors) {
+                        if (error.errors.hasOwnProperty(field)) {
+                            let err = error.errors[field];
+                            let message = err.kind === 'user defined' ? err.message : err.kind;
 
-                errors.push(_.omit(error, 'type', '__raw'));
-            });
+                            errors.push(_.pick({
+                                field: err.path,
+                                message: `err ${message.toLowerCase()}`,
+                                alert: `err ${err.path}.${message.toLowerCase()}`,
+                                value: _.isArray(err.value) ? null : err.value
+                            }, value => !_.isEmpty(value)));
+                        }
+                    }
+                }
+            } catch (ex) {
+                return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
+            }
 
             return this.send(res, HttpStatus.UNPROCESSABLE_ENTITY, {
-                errors: errors
-            }, message || 'Validation  failed');
+                error: _.isEmpty(errors) ? error : errors
+            }, message || 'Validation failed');
         }
 
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
