@@ -1,5 +1,8 @@
+'use strict';
+
 import * as _ from 'underscore';
 
+import Response from '../framework/rest/Response';
 import Lessons from '../models/Lessons';
 
 class LessonController {
@@ -7,10 +10,10 @@ class LessonController {
     public actionIndex(req: any, res: any): object {
         return Lessons.find({})
             .then((data) => {
-                return res.send(data);
+                return Response.ok(res, data, null);
             })
-            .catch((err) => {
-                return res.send(err);
+            .catch(() => {
+                return Response.internalServer(res);
             });
     }
 

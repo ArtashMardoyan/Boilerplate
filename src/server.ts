@@ -1,6 +1,5 @@
 import * as cors from 'cors';
 import * as path from 'path';
-import * as _ from 'underscore';
 import * as helmet from 'helmet';
 import * as logger from 'morgan';
 import * as express from 'express';
@@ -10,14 +9,8 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as autoRoute from 'express-autoroute';
 
-import config from './config';
-
-interface Response {
-    code: number;
-    name: string;
-    message: any;
-    trace: any;
-}
+import NotFoundHttpException from './framework/http/exceptions/NotFoundHttpException';
+import errorResolver from './framework/rest/errorResolver';
 
 class Server {
 
@@ -27,6 +20,7 @@ class Server {
         this.app = express();
         this.config();
         this.routes();
+        this.errorResolver();
     }
 
     public config(): void {
@@ -60,28 +54,12 @@ class Server {
         });
     }
 
-    public errorResolver(): any {
-        this.app.use((err, req, res, next) => {
-            const statusCode: number = err.statusCode || 500;
-            const statusName: string = err.statusName || 'INTERNAL_SERVER_ERROR';
-
-            const response: Response = {
-                code: statusCode,
-                name: statusName,
-                message: err.name === 'HttpException' ? err.message : null,
-                trace: null
-            };
-
-            if (config.get('NODE_ENV') === 'development') {
-                response.trace = _.omit(err, ['name', 'message', 'statusCode', 'statusName']);
-                response.trace = _.pick(response.trace, (value) => !_.isEmpty(value));
-            }
-
-            return res.status(statusCode).json(
-                _.pick(response, (value) => _.isNumber(value) || !_.isEmpty(value))
-            );
-
+    public errorResolver(): void {
+        this.app.use((req, res, next) => {
+            next(new NotFoundHttpException());
         });
+
+        this.app.use(errorResolver);
     }
 }
 

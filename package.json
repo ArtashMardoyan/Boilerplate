@@ -4,12 +4,12 @@
   "main": "./build/index.js",
   "license": "MIT",
   "scripts": {
-    "build":"tsc && rsync -av src/config build/ --exclude=index.js && node ./build/index.js",
+    "build": "tsc && rsync -av src/config build/ --exclude=index.js && node ./build/index.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run build\""
   },
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
-    "body-parser": "1.18.2",
+    "body-parser": "^1.18.2",
     "compression": "1.7.1",
     "cookie-parser": "1.4.3",
     "cors": "2.8.4",
@@ -21,12 +21,12 @@
     "mongoose": "5.0.0-rc1",
     "morgan": "1.9.0",
     "nconf": "^0.10.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "underscore.string": "^3.3.4"
   },
   "devDependencies": {
     "@types/underscore": "^1.8.8",
     "@types/nconf": "0.0.37",
-    "@types/body-parser": "1.16.8",
     "@types/cookie-parser": "1.4.1",
     "@types/cors": "2.8.3",
     "@types/express": "4.11.0",
