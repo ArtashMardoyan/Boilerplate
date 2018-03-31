@@ -85,7 +85,7 @@ class Response {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
     }
 
-    public internalServer(res: any, message: any) {
+    public internalServer(res: any, message: any): object {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
     }
 

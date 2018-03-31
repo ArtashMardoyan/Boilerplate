@@ -7,7 +7,7 @@ import Lessons from '../models/Lessons';
 
 class LessonController {
 
-    public actionIndex(req: any, res: any): void {
+    public actionIndex(req: any, res: any): object {
         try {
             Lessons.count({})
                 .then((count) => {
@@ -16,16 +16,16 @@ class LessonController {
                             skip: req.query.offset,
                             limit: req.query.limit
                         })
-                        .then((data) => {
+                        .then((lesson) => {
                             return Response.ok(res, {
-                                data,
+                                lesson,
                                 _meta: res.pageable(count)
-                            });
+                            }, null);
                         });
                 })
-                .catch(() => Response.internalServer(res));
+                .catch(() => Response.internalServer(res, null));
         } catch (ex) {
-            return Response.internalServer(res);
+            return Response.internalServer(res, null);
         }
 
     }
@@ -36,13 +36,13 @@ class LessonController {
 
             return Lessons.create(result)
                 .then((data) => {
-                    return Response.created(res, data);
+                    return Response.created(res, data, null);
                 })
                 .catch((err) => {
-                    return Response.unprocessableEntity(res, err);
+                    return Response.unprocessableEntity(res, err, null);
                 });
         } catch (ex) {
-            return Response.internalServer(res);
+            return Response.internalServer(res, null);
         }
     }
 
@@ -53,7 +53,7 @@ class LessonController {
             return Lessons.findById(id)
                 .then((lesson) => {
                     if (_.isEmpty(lesson)) {
-                        return Response.notFound(res);
+                        return Response.notFound(res, null);
                     }
 
                     const result = _.pick(req.body,
@@ -63,14 +63,14 @@ class LessonController {
 
                     return lesson.save()
                         .then((data) => {
-                            return Response.ok(res, data);
+                            return Response.ok(res, data, null);
                         });
                 })
                 .catch(() => {
-                    return Response.internalServer(res);
+                    return Response.internalServer(res, null);
                 });
         } catch (ex) {
-            return Response.internalServer(res);
+            return Response.internalServer(res, null);
         }
     }
 
@@ -81,19 +81,19 @@ class LessonController {
             return Lessons.findById(id)
                 .then((lesson) => {
                     if (_.isEmpty(lesson)) {
-                        return Response.notFound(res);
+                        return Response.notFound(res, null);
                     }
 
                     return lesson.remove()
                         .then(() => {
-                            return Response.noContent(res);
+                            return Response.noContent(res, null);
                         });
                 })
                 .catch((err) => {
-                    return Response.internalServer(res);
+                    return Response.internalServer(res, null);
                 });
         } catch (ex) {
-            return Response.internalServer(res);
+            return Response.internalServer(res, null);
         }
     }
 }
