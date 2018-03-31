@@ -1,7 +1,6 @@
 'use strict';
 
 import * as _ from 'underscore';
-import * as mongoDb from 'mongodb/';
 
 import Response from '../framework/rest/Response';
 import Lessons from '../models/Lessons';
@@ -33,11 +32,6 @@ class LessonController {
 
     public actionUpdate(req: any, res: any): object {
         const {id} = req.params;
-        // const isValid = mongoDb.ObjectID.isValid;
-        //
-        // if (!isValid(id)) {
-        //     return Response.notFound(res);
-        // }
 
         return Lessons.findById(id)
             .then((lesson) => {
