@@ -11,6 +11,7 @@ import * as autoRoute from 'express-autoroute';
 
 import NotFoundHttpException from './framework/http/exceptions/NotFoundHttpException';
 import errorResolver from './framework/rest/errorResolver';
+import pageable from './middlewares/pageable';
 
 class Server {
 
@@ -33,6 +34,7 @@ class Server {
         this.app.use(cookieParser());
         this.app.use(logger('dev'));
         this.app.use(compression());
+        this.app.use(pageable);
         this.app.use(helmet());
         this.app.use(cors());
 

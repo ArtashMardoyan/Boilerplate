@@ -2,72 +2,74 @@
 
 const _ = require('underscore');
 
-const ValidationMessages = require('./../../enums/ValidationMessages');
 const HttpStatus = require('./../http/enums/HttpStatus');
-const Constants = require('./../../enums/Constants');
 
-export default class Response {
+class Response {
 
-    static send(res, httpStatus, data, message) {
+    public send(res: any, httpStatus: any, data: any, message: any): object {
         return res.status(httpStatus.code)
             .json(_.pick({
                 status: httpStatus.code,
                 name: httpStatus.name,
                 message,
                 data
-            }, value => _.isNumber(value) || !_.isNull(value)));
+            }, (value) => _.isNumber(value) || !_.isNull(value)));
     }
 
-    static ok(res, data, message) {
+    public ok(res: any, data: any, message: any): object {
         return this.send(res, HttpStatus.OK, data, message);
     }
 
-    static created(res, data, message) {
+    public created(res: any, data: any, message: any): object {
         return this.send(res, HttpStatus.CREATED, data, message);
     }
 
-    static accepted(res, data, message) {
+    public accepted(res: any, data: any, message: any): object {
         return this.send(res, HttpStatus.ACCEPTED, data, message);
     }
 
-    static noContent(res, message) {
+    public noContent(res: any, message: any): object {
         return this.send(res, HttpStatus.NO_CONTENT, null, message);
     }
 
-    static unauthorized(res, data, message) {
+    public unauthorized(res: any, data: any, message: any): object {
         return this.send(res, HttpStatus.UNAUTHORIZED, data, message);
     }
 
-    static forbidden(res, message) {
+    public forbidden(res: any, message: any): object {
         return this.send(res, HttpStatus.FORBIDDEN, null, message);
     }
 
-    static badRequest(res, message) {
+    public badRequest(res: any, message: any): object {
         return this.send(res, HttpStatus.BAD_REQUEST, null, message);
     }
 
-    static notFound(res, message) {
+    public notFound(res: any, message: any): object {
         return this.send(res, HttpStatus.NOT_FOUND, null, message);
     }
 
-    static unprocessableEntity(res, error, message) {
+    public unprocessableEntity(res: any, error: any, message: any): object {
         if (error instanceof Error && error.hasOwnProperty('name') &&
             error.name === 'ValidationError') {
-            let errors = [];
+            const errors = [];
 
             try {
+                const data: any = {
+                    error
+                };
+
                 if (error.hasOwnProperty('errors')) {
-                    for (let field in error.errors) {
-                        if (error.errors.hasOwnProperty(field)) {
-                            let err = error.errors[field];
-                            let message = err.kind === 'user defined' ? err.message : err.kind;
+                    for (const field in data.error.errors) {
+                        if (data.error.errors.hasOwnProperty(field)) {
+                            const err = data.error.errors[field];
+                            const message = err.kind === 'user defined' ? err.message : err.kind;
 
                             errors.push(_.pick({
                                 field: err.path,
                                 message: `err ${message.toLowerCase()}`,
                                 alert: `err ${err.path}.${message.toLowerCase()}`,
                                 value: _.isArray(err.value) ? null : err.value
-                            }, value => !_.isEmpty(value)));
+                            }, (value) => !_.isEmpty(value)));
                         }
                     }
                 }
@@ -83,20 +85,17 @@ export default class Response {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
     }
 
-    static internalServer(res, message) {
-        console.log(HttpStatus.INTERNAL_SERVER_ERROR);
+    public internalServer(res: any, message: any) {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
     }
 
-    static pageable(req, res, count) {
-        let _meta = {
+    public pageable(req: any, res: any, count: number) {
+        const _meta = {
             totalCount: count || 0,
             currentPage: req.query.page || 0,
             pageCount: Math.ceil(count / req.query.limit) || 0,
             perPage: req.query.limit || 0
         };
-
-        console.info(Math.ceil(count / req.query.limit) || 0);
 
         res.setHeader('X-Pagination-Per-Page', _meta.perPage);
         res.setHeader('X-Pagination-Current-Page', _meta.currentPage);
@@ -106,3 +105,5 @@ export default class Response {
         return _meta;
     }
 }
+
+export default new Response();
