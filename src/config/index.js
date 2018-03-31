@@ -22,4 +22,4 @@ config.defaults({
 
 config.required([]);
 
-export default config;
+module.exports = config;
