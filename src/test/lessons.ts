@@ -29,8 +29,8 @@ describe('Lessons', () => {
                 .end((err, res) => {
                     console.log(res.body.data);
                     res.should.have.status(200);
-                    res.body.data.lesson.should.be.a('array');
-                    res.body.data.lesson.length.should.be.eql(0);
+                    res.body.data.docs.should.be.a('array');
+                    res.body.data.docs.length.should.be.eql(0);
                     done();
                 });
         });

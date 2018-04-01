@@ -7,7 +7,7 @@
     "start": "node ./build/.",
     "build": "tsc && rsync -av src/config build/ --exclude=index.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js -e ts --exec \"yarn build && yarn start\"",
-    "test": "yarn build && mocha ./build/."
+    "test": "tsc && mocha ./build/test/"
   },
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
