@@ -1,59 +1,45 @@
 'use strict';
 
 import * as _ from 'underscore';
+import {Request, Response} from 'express';
 
-import Response from '../framework/rest/Response';
-import Lessons from '../models/Lessons';
+import MagicResponse from '../framework/rest/magicResponse';
+import Lessons from './../models/Lessons';
 
 class LessonController {
 
-    public actionIndex(req: any, res: any): object {
+    public actionIndex(req: Request, res: Response): any {
         try {
-            Lessons.count({})
-                .then((count) => {
-                    return Lessons.find({}, {},
-                        {
-                            skip: req.query.offset,
-                            limit: req.query.limit
-                        })
-                        .then((lesson) => {
-                            return Response.ok(res, {
-                                lesson,
-                                _meta: res.pageable(count)
-                            }, null);
-                        });
-                })
-                .catch(() => Response.internalServer(res, null));
-        } catch (ex) {
-            return Response.internalServer(res, null);
-        }
+            Lessons.paginate({}, {
+                page: req.query.page,
+                limit: req.query.limit
 
+            })
+                .then((lessons) => MagicResponse.ok(res, lessons))
+                .catch(() => MagicResponse.internalServer(res));
+        } catch (ex) {
+            return MagicResponse.internalServer(res);
+        }
     }
 
-    public actionCreate(req: any, res: any): object {
+    public actionCreate(req: Request, res: Response): any {
         try {
             const result = _.pick(req.body, 'title', 'overview', 'approach', 'checklist');
 
             return Lessons.create(result)
-                .then((data) => {
-                    return Response.created(res, data, null);
-                })
-                .catch((err) => {
-                    return Response.unprocessableEntity(res, err, null);
-                });
+                .then((data) => MagicResponse.created(res, data))
+                .catch((err) => MagicResponse.unprocessableEntity(res, err));
         } catch (ex) {
-            return Response.internalServer(res, null);
+            return MagicResponse.internalServer(res);
         }
     }
 
-    public actionUpdate(req: any, res: any): object {
+    public actionUpdate(req: Request, res: Response): any {
         try {
-            const {id} = req.params;
-
-            return Lessons.findById(id)
+            return Lessons.findById(req.params.id)
                 .then((lesson) => {
                     if (_.isEmpty(lesson)) {
-                        return Response.notFound(res, null);
+                        return MagicResponse.notFound(res);
                     }
 
                     const result = _.pick(req.body,
@@ -62,38 +48,28 @@ class LessonController {
                     _.assign(lesson, result);
 
                     return lesson.save()
-                        .then((data) => {
-                            return Response.ok(res, data, null);
-                        });
+                        .then((data) => MagicResponse.ok(res, data));
                 })
-                .catch(() => {
-                    return Response.internalServer(res, null);
-                });
+                .catch(() => MagicResponse.internalServer(res));
         } catch (ex) {
-            return Response.internalServer(res, null);
+            return MagicResponse.internalServer(res);
         }
     }
 
-    public actionDelete(req: any, res: any): object {
+    public actionDelete(req: Request, res: Response): any {
         try {
-            const {id} = req.params;
-
-            return Lessons.findById(id)
+            return Lessons.findById(req.params.id)
                 .then((lesson) => {
                     if (_.isEmpty(lesson)) {
-                        return Response.notFound(res, null);
+                        return MagicResponse.notFound(res);
                     }
 
                     return lesson.remove()
-                        .then(() => {
-                            return Response.noContent(res, null);
-                        });
+                        .then(() => MagicResponse.noContent(res));
                 })
-                .catch((err) => {
-                    return Response.internalServer(res, null);
-                });
+                .catch(() => MagicResponse.internalServer(res));
         } catch (ex) {
-            return Response.internalServer(res, null);
+            return MagicResponse.internalServer(res);
         }
     }
 }

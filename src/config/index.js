@@ -16,7 +16,7 @@ config.set('params', {
 });
 
 config.defaults({
-    SERVER_PORT: 5000,
+    SERVER_PORT: 3001,
     NODE_ENV: 'development'
 });
 

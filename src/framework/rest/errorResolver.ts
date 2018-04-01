@@ -1,11 +1,19 @@
 'use strict';
 
-const _ = require('underscore');
+import * as _ from 'underscore';
+import {Request, Response, NextFunction} from 'express';
 
-const HttpStatus = require('./../http/enums/HttpStatus');
-const config = require('./../../config');
+interface Error {
+    name?: string;
+    message?: string;
+    statusCode?: number;
+    statusName?: string;
+}
 
-export default (err, req, res, next) => { // eslint-disable-line
+import * as HttpStatus from './../http/enums/HttpStatus';
+import * as config from './../../config';
+
+export default (err: Error, req: Request, res: Response, next: NextFunction) => {
     const statusCode = err.statusCode || HttpStatus.INTERNAL_SERVER_ERROR.code;
     const statusName = err.statusName || HttpStatus.INTERNAL_SERVER_ERROR.name;
 

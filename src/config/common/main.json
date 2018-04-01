@@ -1,1 +1,8 @@
-{}
+{
+  "response": {
+    "limit": {
+      "max": 50,
+      "default": 50
+    }
+  }
+}

@@ -1,3 +1,5 @@
+'use strict';
+
 import * as cors from 'cors';
 import * as path from 'path';
 import * as helmet from 'helmet';
@@ -6,12 +8,13 @@ import * as express from 'express';
 import * as mongoose from 'mongoose';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
+import * as paginate from 'express-paginate';
 import * as cookieParser from 'cookie-parser';
 import * as autoRoute from 'express-autoroute';
 
 import NotFoundHttpException from './framework/http/exceptions/NotFoundHttpException';
 import errorResolver from './framework/rest/errorResolver';
-import pageable from './middlewares/pageable';
+import * as config from './config';
 
 class Server {
 
@@ -26,15 +29,15 @@ class Server {
 
     public config(): void {
 
-        const MONGO_URI: string = 'mongodb://localhost:27017/boilerplate';
+        const MONGO_URI: string = config.get('db:MONGO_URI');
         mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
 
+        this.app.use(paginate.middleware(config.get('response:limit:default'), config.get('response:limit:max')));
         this.app.use(bodyParser.urlencoded({extended: true}));
         this.app.use(bodyParser.json());
         this.app.use(cookieParser());
         this.app.use(logger('dev'));
         this.app.use(compression());
-        this.app.use(pageable);
         this.app.use(helmet());
         this.app.use(cors());
 

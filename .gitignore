@@ -96,7 +96,6 @@ typings/
 .env
 .envrc
 
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

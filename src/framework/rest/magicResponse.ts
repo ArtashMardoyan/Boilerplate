@@ -1,12 +1,13 @@
 'use strict';
 
-const _ = require('underscore');
+import * as _ from 'underscore';
+import {Response} from 'express';
 
-const HttpStatus = require('./../http/enums/HttpStatus');
+import * as HttpStatus from './../http/enums/HttpStatus';
 
-class Response {
+class MagicResponse {
 
-    public send(res: any, httpStatus: any, data: any, message: any): object {
+    public send(res: Response, httpStatus: any, data: any, message: any): any {
         return res.status(httpStatus.code)
             .json(_.pick({
                 status: httpStatus.code,
@@ -16,39 +17,39 @@ class Response {
             }, (value) => _.isNumber(value) || !_.isNull(value)));
     }
 
-    public ok(res: any, data: any, message: any): object {
+    public ok(res: Response, data: any, message: string = null): any {
         return this.send(res, HttpStatus.OK, data, message);
     }
 
-    public created(res: any, data: any, message: any): object {
+    public created(res: Response, data: any, message: string = null): any {
         return this.send(res, HttpStatus.CREATED, data, message);
     }
 
-    public accepted(res: any, data: any, message: any): object {
+    public accepted(res: Response, data: any, message: string = null): any {
         return this.send(res, HttpStatus.ACCEPTED, data, message);
     }
 
-    public noContent(res: any, message: any): object {
+    public noContent(res: Response, message: string = null): any {
         return this.send(res, HttpStatus.NO_CONTENT, null, message);
     }
 
-    public unauthorized(res: any, data: any, message: any): object {
+    public unauthorized(res: Response, data: any, message: string = null): any {
         return this.send(res, HttpStatus.UNAUTHORIZED, data, message);
     }
 
-    public forbidden(res: any, message: any): object {
+    public forbidden(res: Response, message: string = null): any {
         return this.send(res, HttpStatus.FORBIDDEN, null, message);
     }
 
-    public badRequest(res: any, message: any): object {
+    public badRequest(res: Response, message: string = null): any {
         return this.send(res, HttpStatus.BAD_REQUEST, null, message);
     }
 
-    public notFound(res: any, message: any): object {
+    public notFound(res: Response, message: string = null): any {
         return this.send(res, HttpStatus.NOT_FOUND, null, message);
     }
 
-    public unprocessableEntity(res: any, error: any, message: any): object {
+    public unprocessableEntity(res: Response, error: any, message: string = null): any {
         if (error instanceof Error && error.hasOwnProperty('name') &&
             error.name === 'ValidationError') {
             const errors = [];
@@ -85,25 +86,9 @@ class Response {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
     }
 
-    public internalServer(res: any, message: any): object {
+    public internalServer(res: any, message: string = null): object {
         return this.send(res, HttpStatus.INTERNAL_SERVER_ERROR, null, message);
-    }
-
-    public pageable(req: any, res: any, count: number) {
-        const _meta = {
-            totalCount: count || 0,
-            currentPage: req.query.page || 0,
-            pageCount: Math.ceil(count / req.query.limit) || 0,
-            perPage: req.query.limit || 0
-        };
-
-        res.setHeader('X-Pagination-Per-Page', _meta.perPage);
-        res.setHeader('X-Pagination-Current-Page', _meta.currentPage);
-        res.setHeader('X-Pagination-Total-Count', _meta.totalCount);
-        res.setHeader('X-Pagination-Page-Count', _meta.pageCount);
-
-        return _meta;
     }
 }
 
-export default new Response();
+export default new MagicResponse();
