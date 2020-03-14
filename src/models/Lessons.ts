@@ -1,6 +1,9 @@
-import { model, Schema } from 'mongoose';
+'use strict';
 
-const LessonsSchema: Schema = new Schema({
+import {Schema, model} from 'mongoose';
+import * as mongoosePaginate from 'mongoose-paginate';
+
+const lessonsSchema: Schema = new Schema({
         title: {
             type: String,
             required: true
@@ -24,6 +27,16 @@ const LessonsSchema: Schema = new Schema({
                 type: String
             }
         }
-    });
+    },
+    {
+        versionKey: false,
+        timestamps: {
+            createdAt: 'created',
+            updatedAt: 'updated'
+        }
+    }
+);
 
-export default model('Lessons', LessonsSchema);
+lessonsSchema.plugin(mongoosePaginate);
+
+export default model('Lessons', lessonsSchema);
